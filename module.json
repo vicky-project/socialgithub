@@ -1,0 +1,11 @@
+{
+    "name": "SocialGithub",
+    "alias": "socialgithub",
+    "description": "",
+    "keywords": [],
+    "priority": 0,
+    "providers": [
+        "Modules\\SocialGithub\\Providers\\SocialGithubServiceProvider"
+    ],
+    "files": []
+}

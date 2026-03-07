@@ -1,0 +1,36 @@
+{
+  "name": "vicky-project/socialgithub-module",
+  "type": "laravel-module",
+  "license": "MIT",
+  "description": "",
+  "authors": [{
+    "name": "Vicky Rahman",
+    "email": "pratamavr@gmail.com"
+  }],
+  "require": {
+    "php": "^8.2",
+    "joshbrw/laravel-module-installer": "^1.0",
+    "nwidart/laravel-modules": "^12.0",
+    "laravel/socialite":"^5.24",
+    "socialiteproviders/github":"^4.1",
+    "vicky-project/socialaccount-module": "dev-dev"
+  },
+  "extra": {
+    "laravel": {
+      "providers": [],
+      "aliases": {}
+    }
+  },
+  "autoload": {
+    "psr-4": {
+      "Modules\\SocialGithub\\": "app/",
+      "Modules\\SocialGithub\\Database\\Factories\\": "database/factories/",
+      "Modules\\SocialGithub\\Database\\Seeders\\": "database/seeders/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Modules\\SocialGithub\\Tests\\": "tests/"
+    }
+  }
+}
