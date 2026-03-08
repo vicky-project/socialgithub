@@ -1,12 +1,12 @@
 <?php
-namespace Modules\SocialGitHub\Models;
+namespace Modules\SocialGithub\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Modules\SocialAccount\Interfaces\SocialAccountInterface;
 use Modules\SocialAccount\Models\SocialAccount;
 
-class GitHubUser extends Model implements SocialAccountInterface
+class GithubUser extends Model implements SocialAccountInterface
 {
   protected $table = 'github_users';
   protected $fillable = ['provider_id',
