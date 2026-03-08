@@ -13,7 +13,7 @@
     "nwidart/laravel-modules": "^12.0",
     "laravel/socialite":"^5.24",
     "socialiteproviders/github":"^4.1",
-    "vicky-project/socialaccount-module": "dev-dev"
+    "vicky-project/socialaccount-module": "^1.0"
   },
   "extra": {
     "laravel": {
