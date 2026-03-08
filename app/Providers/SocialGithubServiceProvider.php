@@ -22,7 +22,7 @@ class SocialGithubServiceProvider extends ServiceProvider
   */
   public function boot(): void
   {
-    if (Module::collections()->has('SocialAccount') && Module::isEnabled("SocialAccount") && class_exists($managerService = \Modules\SocialAccount\Services\SocialProviderManager::class)) {
+    if (Module::isEnabled("SocialAccount") && class_exists($managerService = \Modules\SocialAccount\Services\SocialProviderManager::class)) {
       $manager = app($managerService);
       $manager->register(new GithubProvider());
     }
