@@ -9,15 +9,22 @@ use Modules\SocialAccount\Models\SocialAccount;
 class GithubUser extends Model implements SocialAccountInterface
 {
   protected $table = 'github_users';
-  protected $fillable = ['provider_id',
+  protected $fillable = [
+    'provider_id',
     'email',
     'name',
     'nickname',
     'avatar',
-    'data'];
+    'data'
+  ];
+
   protected $casts = ['data' => 'array'];
 
   public function provider(): MorphOne {
     return $this->morphOne(SocialAccount::class, "providerable");
+  }
+
+  public function openLink(): string {
+    return 'github.index';
   }
 }
