@@ -1,8 +1,15 @@
 @extends('socialgithub::layouts.app')
 
-@section('title', 'Repositori GitHub - ' . ($githubUser->nickname ?? ''))
+@section('title', 'Repositories')
 
 @section('content')
+<div class="github-header">
+  <a href="{{ url()->previous() }}" class="back-link">
+    <i class="bi bi-arrow-left"></i> Kembali
+  </a>
+  <h1 class="page-title">Repositories</h1>
+</div>
+
 @if(isset($error))
 <div class="alert alert-danger">
   {{ $error }}
@@ -12,10 +19,9 @@
 @if(count($repos) > 0)
 <div class="list-group list-group-flush repo-list">
   @foreach($repos as $repo)
-  <div class="list-group-item px-0 py-3">
+  <div class="list-group-item">
     <div class="d-flex justify-content-between align-items-start">
       <div class="flex-grow-1">
-        {{-- Nama repo dan badge --}}
         <div class="repo-name mb-1">
           <a href="{{ $repo['html_url'] }}" target="_blank" class="text-decoration-none">
             {{ $repo['name'] }}
@@ -28,30 +34,25 @@
           @endif
         </div>
 
-        {{-- Deskripsi --}}
         @if($repo['description'])
         <p class="repo-description">
           {{ $repo['description'] }}
         </p>
         @endif
 
-        {{-- Topics --}}
         @if(!empty($repo['topics']))
         <div class="mb-1">
           @foreach($repo['topics'] as $topic)
-          <span class="badge bg-light text-primary border me-1">
-            {{ $topic }}
-          </span>
+          <span class="badge bg-light text-primary border me-1">{{ $topic }}</span>
           @endforeach
         </div>
         @endif
 
-        {{-- Meta: bahasa, bintang, fork, lisensi, waktu --}}
         <div class="repo-meta d-flex flex-wrap align-items-center">
           @if($repo['language'])
           @php
           $langColor = $languageColors[$repo['language']] ?? '#ccc';
-          $langColor = isset($langColor['color']) ? $langColor['color'] : $langColor;
+          $langColor = is_array($langColor) ? $langColor['color'] : $langColor;
           @endphp
           <span class="me-3 d-inline-flex align-items-center">
             <span class="language-dot" style="background-color: {{ $langColor }};"></span>
@@ -77,12 +78,9 @@
           </span>
         </div>
       </div>
-
-      {{-- Tombol GitHub --}}
       <div class="ms-3">
         <a href="{{ $repo['html_url'] }}" target="_blank"
-          class="btn btn-sm btn-outline-secondary"
-          title="Lihat di GitHub">
+          class="btn btn-sm repo-github-link" title="Lihat di GitHub">
           <i class="bi bi-github"></i>
         </a>
       </div>
