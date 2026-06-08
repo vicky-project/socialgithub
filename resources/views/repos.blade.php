@@ -31,7 +31,9 @@
 @if(isset($userName))
 <div class="d-flex align-items-center mb-3">
   @if($userAvatar)
-  <img src="{{ $userAvatar }}" alt="{{ $userName }}" class="rounded-circle me-2" width="32" height="32">
+  <a href="{{ $userHtmlUrl ?? 'https://github.com/' . $username }}" target="_blank" title="Lihat profil GitHub">
+    <img src="{{ $userAvatar }}" alt="{{ $userName }}" class="rounded-circle me-2" width="32" height="32">
+  </a>
   @endif
   <strong>{{ $userName }}</strong>
   <span class="badge bg-secondary ms-2">{{ number_format($totalPublicRepos) }} repositori publik</span>

@@ -38,12 +38,14 @@ class GithubRepoController extends Controller
     $totalPublicRepos = 0;
     $userName = null;
     $userAvatar = null;
+    $userHtmlUrl = null;
 
     if ($userResponse->successful()) {
       $userData = $userResponse->json();
       $totalPublicRepos = $userData['public_repos'] ?? 0;
       $userName = $userData['name'] ?? $username;
       $userAvatar = $userData['avatar_url'] ?? null;
+      $userHtmlUrl = $userData['html_url'] ?? "https://github.com/{$username}";
     } elseif ($userResponse->status() == 404) {
       $error = "Pengguna '{$username}' tidak ditemukan.";
       // tidak fetch repos jika user tidak ada
@@ -123,7 +125,7 @@ class GithubRepoController extends Controller
     return view('socialgithub::repos', compact(
       'paginator', 'repos', 'error', 'username', 'isOwnProfile',
       'totalPublicRepos', 'userName', 'userAvatar', 'page', 'perPage',
-      'languageColors', 'title'
+      'languageColors', 'title', 'userHtmlUrl'
     ));
   }
 }
