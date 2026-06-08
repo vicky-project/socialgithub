@@ -1,4 +1,4 @@
-@extends('socialgithub::layouts.github')
+@extends('socialgithub::layouts.app')
 
 @section('title', 'Repositori GitHub - ' . ($githubUser->nickname ?? ''))
 
