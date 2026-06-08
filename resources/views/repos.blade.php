@@ -11,7 +11,7 @@
 </div>
 
 {{-- Form pencarian username --}}
-<form action="{{ route('github.repos') }}" method="GET" class="mb-4">
+<form action="{{ route('github.index') }}" method="GET" class="mb-4">
   <div class="input-group">
     <span class="input-group-text"><i class="bi bi-github"></i></span>
     <input type="text" name="username" class="form-control"
