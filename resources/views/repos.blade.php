@@ -17,9 +17,6 @@
     <input type="search" name="username" id="search-username" class="form-control"
     placeholder="Cari username GitHub..."
     value="{{ $username ?? '' }}">
-    <button class="btn btn-outline-secondary" type="button" id="clear-search" style="display: none;">
-      <i class="bi bi-x-lg"></i>
-    </button>
     <button class="btn btn-outline-secondary" type="submit">Cari</button>
   </div>
   @if(isset($username) && !$isOwnProfile)
@@ -140,34 +137,3 @@
 </p>
 @endif
 @endsection
-
-@push('scripts')
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-  const form = document.getElementById('search-form');
-  const input = document.getElementById('search-username');
-  const clearBtn = document.getElementById('clear-search');
-
-  function toggleClearButton() {
-  if (input.value.length > 0) {
-  clearBtn.style.display = 'inline-block';
-  } else {
-  clearBtn.style.display = 'none';
-  }
-  }
-
-  // Event saat mengetik
-  input.addEventListener('input', toggleClearButton);
-
-  // Inisialisasi saat halaman dimuat (jika ada nilai dari query string)
-  toggleClearButton();
-
-  // Tombol clear diklik
-  clearBtn.addEventListener('click', function() {
-  input.value = '';
-  toggleClearButton();
-  input.focus();
-  });
-  });
-</script>
-@endpush
