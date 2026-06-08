@@ -98,6 +98,13 @@
       background-color: #eaeef2;
       color: #000;
     }
+    .pagination {
+      --bs-pagination-color: #0969da;
+      --bs-pagination-hover-color: #0969da;
+      --bs-pagination-active-bg: #0969da;
+      --bs-pagination-active-border-color: #0969da;
+      font-size: 0.85rem;
+    }
   </style>
 </head>
 <body>

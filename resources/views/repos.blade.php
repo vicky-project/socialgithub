@@ -11,7 +11,7 @@
 </div>
 
 {{-- Form pencarian username --}}
-<form action="{{ route('github.index') }}" method="GET" class="mb-4">
+<form action="{{ route('github.index') }}" method="GET" class="mb-3">
   <div class="input-group">
     <span class="input-group-text"><i class="bi bi-github"></i></span>
     <input type="text" name="username" class="form-control"
@@ -24,15 +24,34 @@
   @endif
 </form>
 
+{{-- Info user (jika ada) --}}
+@if(isset($userName))
+<div class="d-flex align-items-center mb-3">
+  @if($userAvatar)
+  <img src="{{ $userAvatar }}" alt="{{ $userName }}" class="rounded-circle me-2" width="32" height="32">
+  @endif
+  <strong>{{ $userName }}</strong>
+  <span class="badge bg-secondary ms-2">{{ number_format($totalPublicRepos) }} repositori publik</span>
+</div>
+@endif
+
 @if(isset($error))
 <div class="alert alert-danger">
   {{ $error }}
 </div>
 @endif
 
-@if(count($repos) > 0)
+@if(isset($paginator) && count($paginator) > 0)
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <small class="text-muted">
+    Menampilkan {{ $paginator->firstItem() }}–{{ $paginator->lastItem() }}
+    dari {{ number_format($paginator->total()) }} repositori
+  </small>
+  {{ $paginator->links() }}
+</div>
+
 <div class="list-group list-group-flush repo-list">
-  @foreach($repos as $repo)
+  @foreach($paginator as $repo)
   <div class="list-group-item">
     <div class="d-flex justify-content-between align-items-start">
       <div class="flex-grow-1">
@@ -66,7 +85,7 @@
           @if($repo['language'])
           @php
           $langColor = $languageColors[$repo['language']] ?? '#ccc';
-          $langColor = is_array($langColor) ? $langColor['color'] : $langColor;
+          $langColor = is_array($langColor) ? $langColor['color'] : $langColor
           @endphp
           <span class="me-3 d-inline-flex align-items-center">
             <span class="language-dot" style="background-color: {{ $langColor }};"></span>
@@ -101,6 +120,14 @@
     </div>
   </div>
   @endforeach
+</div>
+
+<div class="d-flex justify-content-between align-items-center mt-3">
+  <small class="text-muted">
+    Menampilkan {{ $paginator->firstItem() }}–{{ $paginator->lastItem() }}
+    dari {{ number_format($paginator->total()) }} repositori
+  </small>
+  {{ $paginator->links() }}
 </div>
 @elseif(!isset($error))
 <p class="text-muted">
