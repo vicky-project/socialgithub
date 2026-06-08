@@ -10,22 +10,32 @@ use Modules\SocialGithub\Models\GithubUser;
 class GithubRepoController extends Controller
 {
   public function index(Request $request) {
-    // Ambil user Github yang terhubung dengan user saat ini
-    $user = $request->user();
-    $githubUser = GithubUser::whereHas('provider', function ($query) use($user) {
-      $query->where('user_id', $user->id);
-    })->first();
+    $searchUsername = $request->input('username', '');
 
-    if (!$githubUser) {
-      abort(404, 'Akun GitHub belum terhubung.');
+    // Jika tidak ada input username, gunakan akun GitHub user yang login
+    if (empty($searchUsername)) {
+      $user = $request->user();
+      $githubUser = GithubUser::whereHas('provider', function ($query) use($user) {
+        $query->where('user_id', $user->id);
+      })->first();
+
+      if (!$githubUser) {
+        abort(404, 'Akun GitHub belum terhubung.');
+      }
+
+      $username = $githubUser->nickname;
+      $isOwnProfile = true;
+    } else {
+      // Hanya izinkan karakter alfanumerik dan dash
+      $username = preg_replace('/[^a-zA-Z0-9\-]/', '', $searchUsername);
+      $isOwnProfile = false;
     }
 
-    $nickname = $githubUser->nickname;
     $repos = [];
     $error = null;
 
     // Panggil GitHub API
-    $response = Http::get("https://api.github.com/users/{$nickname}/repos", [
+    $response = Http::get("https://api.github.com/users/{$username}/repos", [
       'sort' => 'updated',
       'per_page' => 100,
     ]);
@@ -38,14 +48,13 @@ class GithubRepoController extends Controller
       $error = "Error {$status}: {$message}";
     }
 
-    // Warna bahasa pemrograman (fallback jika file JSON tidak ada)
+    // Warna bahasa pemrograman
     $languageColors = [];
-
     $colorFile = module_path('SocialGithub', 'Data/github-colors.json');
     if (file_exists($colorFile)) {
       $languageColors = json_decode(file_get_contents($colorFile), true);
     } else {
-      // Fallback untuk bahasa populer jika file tidak ada
+      // Fallback warna populer (seperti sebelumnya)
       $languageColors = [
         'JavaScript' => '#f1e05a',
         'TypeScript' => '#2b7489',
@@ -68,6 +77,10 @@ class GithubRepoController extends Controller
       ];
     }
 
-    return view('socialgithub::repos', compact('repos', 'error', 'githubUser', 'languageColors'));
+    $title = "Repositories - {$username}";
+
+    return view('socialgithub::repos', compact(
+      'repos', 'error', 'username', 'isOwnProfile', 'title', 'languageColors'
+    ));
   }
 }

@@ -1,14 +1,28 @@
 @extends('socialgithub::layouts.app')
 
-@section('title', 'Repositories')
+@section('title', $title ?? 'Repositories')
 
 @section('content')
 <div class="github-header">
   <a href="{{ url()->previous() }}" class="back-link">
     <i class="bi bi-arrow-left"></i> Kembali
   </a>
-  <h1 class="page-title">{{ $githubUser->nickname ?? '' }}</h1>
+  <h1 class="page-title">Repositories</h1>
 </div>
+
+{{-- Form pencarian username --}}
+<form action="{{ route('github.repos') }}" method="GET" class="mb-4">
+  <div class="input-group">
+    <span class="input-group-text"><i class="bi bi-github"></i></span>
+    <input type="text" name="username" class="form-control"
+    placeholder="Cari username GitHub..."
+    value="{{ $username ?? '' }}">
+    <button class="btn btn-outline-secondary" type="submit">Cari</button>
+  </div>
+  @if(isset($username) && !$isOwnProfile)
+  <small class="text-muted">Menampilkan repositori dari <strong>{{ $username }}</strong></small>
+  @endif
+</form>
 
 @if(isset($error))
 <div class="alert alert-danger">
@@ -90,7 +104,7 @@
 </div>
 @elseif(!isset($error))
 <p class="text-muted">
-  Tidak ada repositori publik.
+  Tidak ada repositori publik untuk pengguna ini.
 </p>
 @endif
 @endsection
