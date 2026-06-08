@@ -4,7 +4,7 @@
 
 @section('content')
 <div class="github-header">
-  <a href="{{ url()->previous() }}" class="back-link">
+  <a href="{{ config('socialgithub.back_url') ?? url()->previous() }}" class="back-link">
     <i class="bi bi-arrow-left"></i> Kembali
   </a>
   <h1 class="page-title">Repositories</h1>
