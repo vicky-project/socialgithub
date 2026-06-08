@@ -11,10 +11,10 @@
 </div>
 
 {{-- Form pencarian username --}}
-<form action="{{ route('github.index') }}" method="GET" class="mb-3">
+<form action="{{ route('github.index') }}" method="GET" class="mb-3" id="search-form">
   <div class="input-group">
     <span class="input-group-text"><i class="bi bi-github"></i></span>
-    <input type="text" name="username" class="form-control"
+    <input type="search" name="username" id="search-username" class="form-control"
     placeholder="Cari username GitHub..."
     value="{{ $username ?? '' }}">
     <button class="btn btn-outline-secondary" type="submit">Cari</button>
@@ -28,7 +28,9 @@
 @if(isset($userName))
 <div class="d-flex align-items-center mb-3">
   @if($userAvatar)
-  <img src="{{ $userAvatar }}" alt="{{ $userName }}" class="rounded-circle me-2" width="32" height="32">
+  <a href="{{ $userHtmlUrl ?? 'https://github.com/' . $username }}" target="_blank" title="Lihat profil GitHub">
+    <img src="{{ $userAvatar }}" alt="{{ $userName }}" class="rounded-circle me-2" width="32" height="32">
+  </a>
   @endif
   <strong>{{ $userName }}</strong>
   <span class="badge bg-secondary ms-2">{{ number_format($totalPublicRepos) }} repositori publik</span>
