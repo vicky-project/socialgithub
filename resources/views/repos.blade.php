@@ -46,6 +46,7 @@
           @if($repo['language'])
           @php
           $langColor = $languageColors[$repo['language']] ?? '#ccc';
+          dd($langColor, $repo['language'], $languageColors);
           @endphp
           <span class="d-inline-flex align-items-center me-3">
             <span class="d-inline-block rounded-circle me-1"
