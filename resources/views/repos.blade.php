@@ -7,7 +7,7 @@
   <a href="{{ url()->previous() }}" class="back-link">
     <i class="bi bi-arrow-left"></i> Kembali
   </a>
-  <h1 class="page-title">Repositories</h1>
+  <h1 class="page-title">{{ $githubUser->nickname ?? '' }}</h1>
 </div>
 
 @if(isset($error))
