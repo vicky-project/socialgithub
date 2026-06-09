@@ -93,6 +93,7 @@
       color: #24292f;
       padding: 0.2rem 0.5rem;
       font-size: 0.85rem;
+      cursor: pointer;
     }
     .repo-github-link:hover {
       background-color: #eaeef2;
