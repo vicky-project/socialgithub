@@ -83,41 +83,170 @@
         </div>
         @endif
 
+        {{-- Meta informasi yang clickable --}}
         <div class="repo-meta d-flex flex-wrap align-items-center">
           @if($repo['language'])
           @php
           $langColor = $languageColors[$repo['language']] ?? '#ccc';
-          $langColor = is_array($langColor) ? $langColor['color'] : $langColor
+          $langColor = is_array($langColor) ? $langColor['color'] : $langColor;
           @endphp
-          <span class="me-3 d-inline-flex align-items-center">
+          <a href="{{ $repo['languages_url'] }}" target="_blank"
+            class="text-decoration-none me-3 d-inline-flex align-items-center text-muted">
             <span class="language-dot" style="background-color: {{ $langColor }};"></span>
             {{ $repo['language'] }}
-          </span>
+          </a>
           @endif
 
-          <span class="me-3">
+          <a href="{{ $repo['stargazers_url'] }}" target="_blank"
+            class="text-decoration-none me-3 text-muted">
             <i class="bi bi-star"></i> {{ number_format($repo['stargazers_count']) }}
-          </span>
-          <span class="me-3">
+          </a>
+
+          <a href="{{ $repo['forks_url'] }}" target="_blank"
+            class="text-decoration-none me-3 text-muted">
             <i class="bi bi-diagram-2"></i> {{ number_format($repo['forks_count']) }}
-          </span>
+          </a>
+
           @if(isset($repo['license']) && $repo['license'])
-          <span class="me-3">
+          @php
+          $licenseUrl = $repo['license']['url'] ?? $repo['html_url'] . '/blob/main/LICENSE';
+          @endphp
+          <a href="{{ $licenseUrl }}" target="_blank"
+            class="text-decoration-none me-3 text-muted">
             <i class="bi bi-shield-check"></i>
             {{ $repo['license']['spdx_id'] ?? $repo['license']['name'] }}
-          </span>
+          </a>
           @endif
-          <span>
-            <i class="bi bi-clock"></i>
-            Diperbarui {{ \Carbon\Carbon::parse($repo['updated_at'])->diffForHumans() }}
+
+          <a href="{{ $repo['issues_url'] ?? $repo['html_url'] . '/issues' }}" target="_blank"
+            class="text-decoration-none me-3 text-muted">
+            <i class="bi bi-exclamation-circle"></i> {{ $repo['open_issues_count'] }}
+          </a>
+
+          <a href="{{ $repo['tags_url'] }}" target="_blank"
+            class="text-decoration-none me-3 text-muted">
+            <i class="bi bi-tag"></i> Tags
+          </a>
+
+          @php
+          $archiveUrl = str_replace(
+          ['{archive_format}', '{/ref}'],
+          ['zipball', '/' . ($repo['default_branch'] ?? 'main')],
+          $repo['archive_url']
+          );
+          @endphp
+          <a href="{{ $archiveUrl }}" target="_blank"
+            class="text-decoration-none me-3 text-muted">
+            <i class="bi bi-download"></i> Download
+          </a>
+
+          <a href="{{ $repo['subscribers_url'] ?? $repo['html_url'] . '/watchers' }}" target="_blank"
+            class="text-decoration-none me-3 text-muted">
+            <i class="bi bi-eye"></i> {{ number_format($repo['watchers_count']) }}
+          </a>
+
+          <span class="text-muted">
+            <i class="bi bi-clock"></i> Diperbarui {{ \Carbon\Carbon::parse($repo['updated_at'])->diffForHumans() }}
           </span>
         </div>
       </div>
-      <div class="ms-3">
-        <a href="{{ $repo['html_url'] }}" target="_blank"
-          class="btn btn-sm repo-github-link" title="Lihat di GitHub">
+
+      <div class="ms-3 d-flex gap-1">
+        {{-- Tombol Info (Detail Lengkap) --}}
+        <button class="btn btn-sm repo-github-link" type="button"
+          data-bs-toggle="collapse" data-bs-target="#detail-{{ $repo['id'] }}"
+          aria-expanded="false" title="Lihat Detail Lengkap">
+          <i class="bi bi-info-circle"></i>
+        </button>
+        {{-- Tombol GitHub --}}
+        <a href="{{ $repo['html_url'] }}" target="_blank" class="btn btn-sm repo-github-link" title="Lihat di GitHub">
           <i class="bi bi-github"></i>
         </a>
+      </div>
+    </div>
+
+    {{-- Panel Detail Lengkap (Collapse) --}}
+    <div class="collapse mt-3" id="detail-{{ $repo['id'] }}">
+      <div class="card card-body bg-light small">
+        <div class="row">
+          <div class="col-md-6">
+            <p class="mb-1">
+              <strong>Full Name:</strong> {{ $repo['full_name'] }}
+            </p>
+            <p class="mb-1">
+              <strong>ID:</strong> {{ $repo['id'] }}
+            </p>
+            <p class="mb-1">
+              <strong>Node ID:</strong> {{ $repo['node_id'] }}
+            </p>
+            <p class="mb-1">
+              <strong>Default Branch:</strong> {{ $repo['default_branch'] ?? 'N/A' }}
+            </p>
+            <p class="mb-1">
+              <strong>Size:</strong> {{ number_format($repo['size']) }} KB
+            </p>
+            <p class="mb-1">
+              <strong>Homepage:</strong>
+              @if($repo['homepage'])
+              <a href="{{ $repo['homepage'] }}" target="_blank">{{ $repo['homepage'] }}</a>
+              @else
+              N/A
+              @endif
+            </p>
+            <p class="mb-1">
+              <strong>Created:</strong> {{ \Carbon\Carbon::parse($repo['created_at'])->format('d M Y') }}
+            </p>
+            <p class="mb-1">
+              <strong>Pushed:</strong> {{ \Carbon\Carbon::parse($repo['pushed_at'])->diffForHumans() }}
+            </p>
+            <p class="mb-1">
+              <strong>Updated:</strong> {{ \Carbon\Carbon::parse($repo['updated_at'])->diffForHumans() }}
+            </p>
+          </div>
+          <div class="col-md-6">
+            <p class="mb-1">
+              <strong>Clone URLs:</strong>
+            </p>
+            <div class="d-flex flex-wrap gap-1 mb-2">
+              <a href="{{ $repo['clone_url'] }}" class="btn btn-sm btn-outline-secondary" target="_blank" title="HTTPS"><i class="bi bi-git"></i> HTTPS</a>
+              <a href="{{ $repo['ssh_url'] }}" class="btn btn-sm btn-outline-secondary" target="_blank" title="SSH"><i class="bi bi-key"></i> SSH</a>
+              <a href="{{ $repo['git_url'] }}" class="btn btn-sm btn-outline-secondary" target="_blank" title="Git"><i class="bi bi-git"></i> Git</a>
+              @if($repo['svn_url'])
+              <a href="{{ $repo['svn_url'] }}" class="btn btn-sm btn-outline-secondary" target="_blank" title="SVN"><i class="bi bi-database"></i> SVN</a>
+              @endif
+            </div>
+
+            <p class="mb-1">
+              <strong>Features:</strong><br>
+              @if($repo['has_issues']) <span class="badge bg-success">Issues</span> @else <span class="badge bg-secondary">No Issues</span> @endif
+              @if($repo['has_projects']) <span class="badge bg-success">Projects</span> @else <span class="badge bg-secondary">No Projects</span> @endif
+              @if($repo['has_wiki']) <span class="badge bg-success">Wiki</span> @else <span class="badge bg-secondary">No Wiki</span> @endif
+              @if($repo['has_pages']) <span class="badge bg-success">Pages</span> @else <span class="badge bg-secondary">No Pages</span> @endif
+              @if($repo['has_discussions']) <span class="badge bg-success">Discussions</span> @else <span class="badge bg-secondary">No Discussions</span> @endif
+            </p>
+
+            <p class="mb-1">
+              <strong>State:</strong>
+              @if($repo['archived']) <span class="badge bg-warning">Archived</span> @endif
+              @if($repo['disabled']) <span class="badge bg-danger">Disabled</span> @endif
+              @if($repo['is_template']) <span class="badge bg-info">Template</span> @endif
+              @if($repo['fork']) <span class="badge bg-info">Forked</span> @endif
+            </p>
+
+            <p class="mb-1">
+              <strong>Allow Forking:</strong> {{ $repo['allow_forking'] ? 'Yes' : 'No' }}
+            </p>
+            <p class="mb-1">
+              <strong>Web Commit Signoff:</strong> {{ $repo['web_commit_signoff_required'] ? 'Required' : 'Not Required' }}
+            </p>
+
+            @if($repo['mirror_url'])
+            <p class="mb-1">
+              <strong>Mirror URL:</strong> <a href="{{ $repo['mirror_url'] }}" target="_blank">{{ $repo['mirror_url'] }}</a>
+            </p>
+            @endif
+          </div>
+        </div>
       </div>
     </div>
   </div>
