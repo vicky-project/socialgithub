@@ -204,15 +204,52 @@
             </p>
           </div>
           <div class="col-md-6">
+            {{-- Clone URLs dengan Mini Tabs --}}
             <p class="mb-1">
               <strong>Clone URLs:</strong>
             </p>
-            <div class="d-flex flex-wrap gap-1 mb-2">
-              <a href="{{ $repo['clone_url'] }}" class="btn btn-sm btn-outline-secondary" target="_blank" title="HTTPS"><i class="bi bi-git"></i> HTTPS</a>
-              <a href="{{ $repo['ssh_url'] }}" class="btn btn-sm btn-outline-secondary" target="_blank" title="SSH"><i class="bi bi-key"></i> SSH</a>
-              <a href="{{ $repo['git_url'] }}" class="btn btn-sm btn-outline-secondary" target="_blank" title="Git"><i class="bi bi-git"></i> Git</a>
+            <ul class="nav nav-tabs small mb-2" id="cloneTabs-{{ $repo['id'] }}" role="tablist">
+              <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="https-tab-{{ $repo['id'] }}" data-bs-toggle="tab" data-bs-target="#https-{{ $repo['id'] }}" type="button" role="tab" aria-controls="https-{{ $repo['id'] }}" aria-selected="true">HTTPS</button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="ssh-tab-{{ $repo['id'] }}" data-bs-toggle="tab" data-bs-target="#ssh-{{ $repo['id'] }}" type="button" role="tab" aria-controls="ssh-{{ $repo['id'] }}" aria-selected="false">SSH</button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="git-tab-{{ $repo['id'] }}" data-bs-toggle="tab" data-bs-target="#git-{{ $repo['id'] }}" type="button" role="tab" aria-controls="git-{{ $repo['id'] }}" aria-selected="false">Git</button>
+              </li>
               @if($repo['svn_url'])
-              <a href="{{ $repo['svn_url'] }}" class="btn btn-sm btn-outline-secondary" target="_blank" title="SVN"><i class="bi bi-database"></i> SVN</a>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link" id="svn-tab-{{ $repo['id'] }}" data-bs-toggle="tab" data-bs-target="#svn-{{ $repo['id'] }}" type="button" role="tab" aria-controls="svn-{{ $repo['id'] }}" aria-selected="false">SVN</button>
+              </li>
+              @endif
+            </ul>
+            <div class="tab-content small mb-2" id="cloneContent-{{ $repo['id'] }}">
+              <div class="tab-pane fade show active" id="https-{{ $repo['id'] }}" role="tabpanel" aria-labelledby="https-tab-{{ $repo['id'] }}">
+                <div class="input-group input-group-sm">
+                  <input type="text" class="form-control" value="{{ $repo['clone_url'] }}" id="https-url-{{ $repo['id'] }}" readonly>
+                  <button class="btn btn-outline-secondary" type="button" onclick="copyUrl('https-url-{{ $repo['id'] }}')"><i class="bi bi-clipboard"></i></button>
+                </div>
+              </div>
+              <div class="tab-pane fade" id="ssh-{{ $repo['id'] }}" role="tabpanel" aria-labelledby="ssh-tab-{{ $repo['id'] }}">
+                <div class="input-group input-group-sm">
+                  <input type="text" class="form-control" value="{{ $repo['ssh_url'] }}" id="ssh-url-{{ $repo['id'] }}" readonly>
+                  <button class="btn btn-outline-secondary" type="button" onclick="copyUrl('ssh-url-{{ $repo['id'] }}')"><i class="bi bi-clipboard"></i></button>
+                </div>
+              </div>
+              <div class="tab-pane fade" id="git-{{ $repo['id'] }}" role="tabpanel" aria-labelledby="git-tab-{{ $repo['id'] }}">
+                <div class="input-group input-group-sm">
+                  <input type="text" class="form-control" value="{{ $repo['git_url'] }}" id="git-url-{{ $repo['id'] }}" readonly>
+                  <button class="btn btn-outline-secondary" type="button" onclick="copyUrl('git-url-{{ $repo['id'] }}')"><i class="bi bi-clipboard"></i></button>
+                </div>
+              </div>
+              @if($repo['svn_url'])
+              <div class="tab-pane fade" id="svn-{{ $repo['id'] }}" role="tabpanel" aria-labelledby="svn-tab-{{ $repo['id'] }}">
+                <div class="input-group input-group-sm">
+                  <input type="text" class="form-control" value="{{ $repo['svn_url'] }}" id="svn-url-{{ $repo['id'] }}" readonly>
+                  <button class="btn btn-outline-secondary" type="button" onclick="copyUrl('svn-url-{{ $repo['id'] }}')"><i class="bi bi-clipboard"></i></button>
+                </div>
+              </div>
               @endif
             </div>
 
@@ -266,3 +303,25 @@
 </p>
 @endif
 @endsection
+
+@push('scripts')
+<script>
+  function copyUrl(id) {
+    const input = document.getElementById(id);
+    input.select();
+    input.setSelectionRange(0, 99999); // untuk mobile
+    navigator.clipboard.writeText(input.value).then(() => {
+    // opsional: ubah tombol jadi ikon centang sesaat
+    const btn = input.parentElement.querySelector('button');
+    const icon = btn.querySelector('i');
+    const originalClass = icon.className;
+    icon.className = 'bi bi-check';
+    setTimeout(() => {
+    icon.className = originalClass;
+    }, 2000);
+    }).catch(err => {
+    console.error('Gagal menyalin:', err);
+    });
+  }
+</script>
+@endpush
